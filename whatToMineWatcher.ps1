@@ -30,7 +30,9 @@ foreach($COIN in $JSON.Coins.psobject.properties.name){
 	#$CoinAlgorithmArray.Add($JSON.Coins.$COIN.algorithm)
 	
 	$PROFIT = [Double]$BTC_PRICE * [Double]$JSON.Coins.$COIN.btc_revenue
-	write-output $COIN" -- Revenue:"$PROFIT 
+	$REVENUE = [Double]$PROFIT - [Double]"1.58"
+	$REVENUE = [math]::round($REVENUE,2)
+	write-output $COIN" -- Revenue:$"$PROFIT" -- Profit:$"$REVENUE
 	
 	#Index
 	#write-output $$JSON.Coins.psobject.properties.name.IndexOf($COIN)
