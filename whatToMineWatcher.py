@@ -1,11 +1,10 @@
 import json
 import re
+import time
 from urllib.request import Request, urlopen
 from pprint import pprint
 
 configJson = 'C:\\Users\\JWhite\\Documents\\Github\\MineAutomator\\config.json'
-
-
 
 
 
@@ -18,8 +17,10 @@ class AutoMiner:
 	algorithmsList = []
 	#Create all coins list
 	allCoinsList = []
-	#Create mineable coins list
+	#Create mineable coins endpoint list
 	mineableCoinsEndpointList = []
+	#Create mineable coins data list
+	mineableCoinsList = []
 
 	def openConfig(self, jsonConfig):
 		with open(jsonConfig) as configFile:
@@ -65,10 +66,39 @@ class AutoMiner:
 					"&commit=Calculate"
 					
 					self.mineableCoinsEndpointList.append(coinEndpointLink)
+	#End of generateMineableCoinEndpoints Function
+	
+	def parseMineableCoins(self):
+		for coinEndpoint in self.mineableCoinsEndpointList:
+			coinRequest = Request(coinEndpoint, headers={'User-Agent': 'Mozilla/5.0'})
+			coinJSONData = urlopen(coinRequest).read().decode("utf-8")
+			coinData = json.loads(coinJSONData)
+			self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),float(coinData["profit"].replace('$',''))))		
 	#End of parseMineableCoins Function
+
+	def sortCoinsByProfit(self):
+		pprint("Before: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
+
+		
+		self.mineableCoinsList.sort(key=lambda x: x.profit, reverse=True)
+	
+		pprint("After: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
 	
 	
-#This class contains the algorithm data loaded from the config file			
+	def timer(self):
+		mins = 0
+		#Loop until mins equals checkRateMinutes
+		while mins < float(self.checkRateMinutes):
+			print(">>>>>>>>>>>>>>>>>>>>>", mins)
+			# Sleep for a minute
+			time.sleep(60)
+			# Increment the minute total
+			mins += 1
+	#End of timer Function
+
+
+#This class contains the algorithm data loaded from the config file	
+
 class AlgorithmData:
 	def __init__(self, name, minerName, p, hr, fee, cost, hcost):
 		#Load the algorithm name
@@ -85,19 +115,28 @@ class AlgorithmData:
 		self.cost = cost
 		#Load the hcost integer into this class variable
 		self.hcost = hcost
-#End of AlgorithmData Class	
-			
-			
-			
-			
+#End of AlgorithmData Class
+
+class CoinData:
+	def __init__(self, name, abbreviation, profit):
+		#Set the coin name
+		self.name = name
+		#Set the coin abbreviation
+		self.abbreviation = abbreviation
+		#Set the profit
+		self.profit = profit
+#End of CoinData Class
+
 
 #MAIN			
 AutoMiner = AutoMiner()
 AutoMiner.openConfig(configJson)
 AutoMiner.pullAllCoins()
 AutoMiner.generateMineableCoinEndpoints()
+AutoMiner.parseMineableCoins()
+AutoMiner.sortCoinsByProfit()
 
-pprint(AutoMiner.mineableCoinsEndpointList)
+#pprint(AutoMiner.mineableCoinsEndpointList)
 
 #https://whattomine.com/coins/172-pasc-pascal.json?utf8=%E2%9C%93&hr=4041.0&p=900.0&fee=0.0&cost=0.06&hcost=0.0&commit=Calculate
 

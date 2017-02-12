@@ -1,34 +1,42 @@
 {
-  "AutoMiner": {
-    "config": {
-      "checkRateMinutes": 20,
-      "profitDifferenceDollars": 0.30
-    },
-    "algorithms": {
-      "pascal": {
-        "minerName": "pascalMiner",
-        "p": 900.0,
-        "hr": 4041.0,
-        "fee": 0.0,
-        "cost": 0.06,
-        "hcost": 0.0
-      },
-      "sha-256": {
-        "minerName": "sha256Miner",
-        "p": 800.0,
-        "hr": 3035.0,
-        "fee": 0.0,
-        "cost": 0.07,
-        "hcost": 0.0
-      },
-      "x11": {
-        "minerName": "x11Miner",
-        "p": 600.0,
-        "hr": 2035.0,
-        "fee": 0.0,
-        "cost": 0.06,
-        "hcost": 0.0
-      }
-    }
-  }
+	"AutoMiner": {
+		"config": {
+			"checkRateMinutes": 20,
+			"profitDifferenceDollars": 0.30
+		},
+		"algorithms": {
+			"equilhash": {
+				"minerName": "equilhash",
+				"p": 650.0,
+				"hr": 2350.0,
+				"fee": 3.0,
+				"cost": 0.06,
+				"hcost": 0.0
+			},
+			"blake-14r": {
+				"minerName": "blake-14r",
+				"p": 650.0,
+				"hr": 5100.0,
+				"fee": 1.0,
+				"cost": 0.06,
+				"hcost": 0.0
+			},
+			"pascal": {
+				"minerName": "pascal",
+				"p": 700.0,
+				"hr": 4700.0,
+				"fee": 1.0,
+				"cost": 0.06,
+				"hcost": 0.0
+			},
+			"lbry": {
+				"minerName": "lbry",
+				"p": 600.0,
+				"hr": 1379.0,
+				"fee": 1.0,
+				"cost": 0.06,
+				"hcost": 0.0
+			}
+		}
+	}
 }
