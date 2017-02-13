@@ -73,15 +73,16 @@ class AutoMiner:
 			coinRequest = Request(coinEndpoint, headers={'User-Agent': 'Mozilla/5.0'})
 			coinJSONData = urlopen(coinRequest).read().decode("utf-8")
 			coinData = json.loads(coinJSONData)
-			self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),float(coinData["profit"].replace('$',''))))		
+			self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),float(coinData["profit"].replace('$',''))))
+			#DEBUG
+			pprint(str(coinData["name"]) + " - " + str(coinData["profit"]))
 	#End of parseMineableCoins Function
 
 	def sortCoinsByProfit(self):
+		#Debug
 		pprint("Before: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
-
-		
 		self.mineableCoinsList.sort(key=lambda x: x.profit, reverse=True)
-	
+		#DEBUG
 		pprint("After: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
 	
 	
@@ -89,7 +90,8 @@ class AutoMiner:
 		mins = 0
 		#Loop until mins equals checkRateMinutes
 		while mins < float(self.checkRateMinutes):
-			print(">>>>>>>>>>>>>>>>>>>>>", mins)
+			#DEBUG
+			pprint("Timer: " + mins + " Minutes")
 			# Sleep for a minute
 			time.sleep(60)
 			# Increment the minute total

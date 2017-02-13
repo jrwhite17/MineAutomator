@@ -5,8 +5,8 @@
 			"profitDifferenceDollars": 0.30
 		},
 		"algorithms": {
-			"equilhash": {
-				"minerName": "equilhash",
+			"equihash": {
+				"minerName": "equihash",
 				"p": 650.0,
 				"hr": 2350.0,
 				"fee": 3.0,
