@@ -1,6 +1,7 @@
 import json
 import re
 import time
+import os
 from urllib.request import Request, urlopen
 from pprint import pprint
 
@@ -21,9 +22,28 @@ class AutoMiner:
 	mineableCoinsEndpointList = []
 	#Create mineable coins data list
 	mineableCoinsList = []
+	
+	def setup(self):
+		self.currentAbsPath = os.path.dirname(os.path.abspath(__file__))
+		self.jsonConfig = self.currentAbsPath + "\\config.json"
+		
+		#Check to see if config file exists
+		if os.path.isfile(self.jsonConfig) == False:
+			pprint("ERROR: Could not find config.json")
+			pprint("Create file in the following directory..")
+			pprint(self.currentAbsPath)
+			quit()
+			
+		#Check to see if mining directory exists
+		if os.path.isdir(self.currentAbsPath + "\\mining") == False:
+			pprint("ERROR: Could not find mining directory")
+			pprint("Create mining directory in the following directory..")
+			pprint(self.currentAbsPath)
+			quit()
+	#End of setup Function
 
-	def openConfig(self, jsonConfig):
-		with open(jsonConfig) as configFile:
+	def openConfig(self):
+		with open(self.jsonConfig) as configFile:
 			#Load Json data into python
 			configData = json.load(configFile)
 			#Load checkRateMinutes and store as variable
@@ -34,7 +54,7 @@ class AutoMiner:
 			#Load algorithms data and create class
 			for algorithm in configData["AutoMiner"]["algorithms"]:
 				algorithmName = algorithm
-				minerName = configData["AutoMiner"]["algorithms"][algorithm]["minerName"]
+				minerDir = configData["AutoMiner"]["algorithms"][algorithm]["minerDir"]
 				p = configData["AutoMiner"]["algorithms"][algorithm]["p"]
 				hr = configData["AutoMiner"]["algorithms"][algorithm]["hr"]
 				fee = configData["AutoMiner"]["algorithms"][algorithm]["fee"]
@@ -42,7 +62,7 @@ class AutoMiner:
 				hcost = configData["AutoMiner"]["algorithms"][algorithm]["hcost"]
 				
 				#Create AlgorithmData class and add to algorithmsList
-				self.algorithmsList.append(AlgorithmData(algorithmName, minerName, p, hr, fee, cost, hcost))
+				self.algorithmsList.append(AlgorithmData(algorithmName, minerDir, p, hr, fee, cost, hcost))
 	#End of openConfig Function			
 
 	def pullAllCoins(self):
@@ -75,7 +95,7 @@ class AutoMiner:
 			coinData = json.loads(coinJSONData)
 			self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),float(coinData["profit"].replace('$',''))))
 			#DEBUG
-			pprint(str(coinData["name"]) + " - " + str(coinData["profit"]))
+			pprint(str(coinData["name"]) +  " - " + str(coinData["tag"]) + " - " + str(coinData["algorithm"]) + " - " + str(coinData["profit"]))
 	#End of parseMineableCoins Function
 
 	def sortCoinsByProfit(self):
@@ -84,7 +104,12 @@ class AutoMiner:
 		self.mineableCoinsList.sort(key=lambda x: x.profit, reverse=True)
 		#DEBUG
 		pprint("After: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
+	#End of sortCoinsByProfit Function
 	
+	def executeMiner(self):
+		pprint(self.currentAbsPath)
+	
+	#End of executeMiner Function
 	
 	def timer(self):
 		mins = 0
@@ -102,11 +127,11 @@ class AutoMiner:
 #This class contains the algorithm data loaded from the config file	
 
 class AlgorithmData:
-	def __init__(self, name, minerName, p, hr, fee, cost, hcost):
+	def __init__(self, name, minerDir, p, hr, fee, cost, hcost):
 		#Load the algorithm name
 		self.name = name
 		#Load the miner name into this class variable
-		self.minerName = minerName
+		self.minerDir = minerDir
 		#Load the power integer into this class variable
 		self.p = p
 		#Load the hash rate integer into this class variable
@@ -132,11 +157,13 @@ class CoinData:
 
 #MAIN			
 AutoMiner = AutoMiner()
-AutoMiner.openConfig(configJson)
+AutoMiner.setup()
+AutoMiner.openConfig()
 AutoMiner.pullAllCoins()
 AutoMiner.generateMineableCoinEndpoints()
 AutoMiner.parseMineableCoins()
 AutoMiner.sortCoinsByProfit()
+AutoMiner.executeMiner()
 
 #pprint(AutoMiner.mineableCoinsEndpointList)
 

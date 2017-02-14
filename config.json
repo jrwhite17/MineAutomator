@@ -6,7 +6,7 @@
 		},
 		"algorithms": {
 			"equihash": {
-				"minerName": "equihash",
+				"minerDir": "EWBF_2b",
 				"p": 650.0,
 				"hr": 2350.0,
 				"fee": 3.0,
@@ -14,7 +14,7 @@
 				"hcost": 0.0
 			},
 			"blake-14r": {
-				"minerName": "blake-14r",
+				"minerDir": "blake-14r",
 				"p": 650.0,
 				"hr": 5100.0,
 				"fee": 1.0,
@@ -22,7 +22,7 @@
 				"hcost": 0.0
 			},
 			"pascal": {
-				"minerName": "pascal",
+				"minerDir": "excavator_v1.0.0a_Win64",
 				"p": 700.0,
 				"hr": 4700.0,
 				"fee": 1.0,
@@ -30,7 +30,7 @@
 				"hcost": 0.0
 			},
 			"lbry": {
-				"minerName": "lbry",
+				"minerDir": "TRUVOT",
 				"p": 600.0,
 				"hr": 1379.0,
 				"fee": 1.0,
