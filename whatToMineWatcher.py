@@ -2,6 +2,7 @@ import json
 import re
 import time
 import os
+import subprocess
 from urllib.request import Request, urlopen
 from pprint import pprint
 
@@ -93,21 +94,33 @@ class AutoMiner:
 			coinRequest = Request(coinEndpoint, headers={'User-Agent': 'Mozilla/5.0'})
 			coinJSONData = urlopen(coinRequest).read().decode("utf-8")
 			coinData = json.loads(coinJSONData)
-			self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),float(coinData["profit"].replace('$',''))))
-			#DEBUG
-			pprint(str(coinData["name"]) +  " - " + str(coinData["tag"]) + " - " + str(coinData["algorithm"]) + " - " + str(coinData["profit"]))
+			
+			#Store algorithm name from config file in CoinData class
+			for algorithm in self.algorithmsList:
+				if algorithm.name in coinEndpoint:
+					self.mineableCoinsList.append(CoinData(str(coinData["name"]),str(coinData["tag"]),str(algorithm.name),float(coinData["profit"].replace('$',''))))
+					#DEBUG
+					#pprint(str(coinData["name"]) +  " - " + str(coinData["tag"]) + " - " + str(coinData["algorithm"]) + " - " + str(algorithm.name) + " - " + str(coinData["profit"]))
+					#pprint(coinEndpoint)
 	#End of parseMineableCoins Function
 
 	def sortCoinsByProfit(self):
 		#Debug
-		pprint("Before: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
+		#pprint("Before: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
 		self.mineableCoinsList.sort(key=lambda x: x.profit, reverse=True)
 		#DEBUG
-		pprint("After: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
+		#pprint("After: " + self.mineableCoinsList[0].name + " " + str(self.mineableCoinsList[0].profit))
 	#End of sortCoinsByProfit Function
 	
 	def executeMiner(self):
-		pprint(self.currentAbsPath)
+		for mineableCoin in self.mineableCoinsList:
+			for algorithm in self.algorithmsList:
+				if mineableCoin.algorithm == algorithm.name:
+					#pprint(algorithm.name + " -- " + algorithm.minerDir)
+					pprint(self.currentAbsPath + "\\mining\\" + algorithm.minerDir + "\\" +  mineableCoin.abbreviation + ".bat")
+					if os.path.isfile(self.currentAbsPath + "\\mining\\" + algorithm.minerDir + "\\" +  mineableCoin.abbreviation + ".bat"):
+						minerProc = subprocess.Popen("C:\\Windows\\System32\\cmd.exe /c "+ self.currentAbsPath + "\\mining\\" + algorithm.minerDir + "\\" +  mineableCoin.abbreviation + ".bat", shell=True)
+						return
 	
 	#End of executeMiner Function
 	
@@ -145,11 +158,13 @@ class AlgorithmData:
 #End of AlgorithmData Class
 
 class CoinData:
-	def __init__(self, name, abbreviation, profit):
+	def __init__(self, name, abbreviation, algorithm, profit):
 		#Set the coin name
 		self.name = name
 		#Set the coin abbreviation
 		self.abbreviation = abbreviation
+		#Set the algorithm name
+		self.algorithm = algorithm
 		#Set the profit
 		self.profit = profit
 #End of CoinData Class

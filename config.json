@@ -30,7 +30,7 @@
 				"hcost": 0.0
 			},
 			"lbry": {
-				"minerDir": "TRUVOT",
+				"minerDir": "TPRUVOT",
 				"p": 600.0,
 				"hr": 1379.0,
 				"fee": 1.0,
